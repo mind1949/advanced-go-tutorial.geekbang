@@ -10,7 +10,7 @@
 
 **用法**
 * `WithContext`
-* `var g errgroup.Group`
+* `g := new(errgroup.Group)`
 
 ## 代码
 ```golang
