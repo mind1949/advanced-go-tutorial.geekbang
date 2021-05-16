@@ -30,8 +30,8 @@ func main() {
 
 	err := app.Run(context.Background())
 	if err != nil {
-        fmt.Println(err)
-    }
+		fmt.Println(err)
+	}
 }
 
 func NewApp(opts ...Opt) *App {

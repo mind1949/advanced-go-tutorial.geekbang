@@ -1,0 +1,24 @@
+package data
+
+import (
+	"blog/internal/conf"
+
+	"github.com/go-kratos/kratos/v2/log"
+	"github.com/google/wire"
+)
+
+// ProviderSet is data providers.
+var ProviderSet = wire.NewSet(NewData, NewArticleRepo)
+
+// Data .
+type Data struct {
+	// TODO warpped database client
+}
+
+// NewData .
+func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
+	cleanup := func() {
+		logger.Log("msg", "closing the data resources")
+	}
+	return &Data{}, cleanup, nil
+}
