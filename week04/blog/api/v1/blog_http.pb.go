@@ -39,7 +39,7 @@ func NewBlogHandler(srv BlogHandler, opts ...http1.HandleOption) http.Handler {
 	}
 	r := mux.NewRouter()
 
-	r.HandleFunc("v1/articles", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/v1/articles", func(w http.ResponseWriter, r *http.Request) {
 		var in CreateArticleRequest
 		if err := h.Decode(r, &in); err != nil {
 			h.Error(w, r, err)
@@ -63,9 +63,14 @@ func NewBlogHandler(srv BlogHandler, opts ...http1.HandleOption) http.Handler {
 		}
 	}).Methods("POST")
 
-	r.HandleFunc("v1/{name=articles/*}", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/v1/articles/{id}", func(w http.ResponseWriter, r *http.Request) {
 		var in UpdateArticleRequest
 		if err := h.Decode(r, &in.Article); err != nil {
+			h.Error(w, r, err)
+			return
+		}
+
+		if err := binding.MapProto(&in, mux.Vars(r)); err != nil {
 			h.Error(w, r, err)
 			return
 		}
@@ -87,9 +92,14 @@ func NewBlogHandler(srv BlogHandler, opts ...http1.HandleOption) http.Handler {
 		}
 	}).Methods("PATCH")
 
-	r.HandleFunc("/v1/{name=articles/*/}", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/v1/articles/{id}}", func(w http.ResponseWriter, r *http.Request) {
 		var in DeleteArticleRequest
 		if err := h.Decode(r, &in); err != nil {
+			h.Error(w, r, err)
+			return
+		}
+
+		if err := binding.MapProto(&in, mux.Vars(r)); err != nil {
 			h.Error(w, r, err)
 			return
 		}
@@ -111,9 +121,14 @@ func NewBlogHandler(srv BlogHandler, opts ...http1.HandleOption) http.Handler {
 		}
 	}).Methods("DELETE")
 
-	r.HandleFunc("v1/{name=articles/*", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/v1/articles/{id}", func(w http.ResponseWriter, r *http.Request) {
 		var in GetArticleRequest
 		if err := h.Decode(r, &in); err != nil {
+			h.Error(w, r, err)
+			return
+		}
+
+		if err := binding.MapProto(&in, mux.Vars(r)); err != nil {
 			h.Error(w, r, err)
 			return
 		}
@@ -135,7 +150,7 @@ func NewBlogHandler(srv BlogHandler, opts ...http1.HandleOption) http.Handler {
 		}
 	}).Methods("GET")
 
-	r.HandleFunc("v1/articles", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/v1/articles", func(w http.ResponseWriter, r *http.Request) {
 		var in ListArticleRequest
 		if err := h.Decode(r, &in); err != nil {
 			h.Error(w, r, err)

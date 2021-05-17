@@ -2,13 +2,10 @@ package service
 
 import (
 	"context"
-	"strconv"
-	"strings"
 
 	pb "blog/api/v1"
 	"blog/internal/biz"
 
-	bizerrs "github.com/go-kratos/kratos/v2/errors"
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -43,19 +40,14 @@ func (b *blogService) UpdateArticle(ctx context.Context, req *pb.UpdateArticleRe
 }
 
 func (b *blogService) DeleteArticle(ctx context.Context, req *pb.DeleteArticleRequest) (*empty.Empty, error) {
-	id, err := strconv.ParseInt(strings.Split(req.GetName(), "/")[1], 10, 64)
-	if err != nil {
-		return nil, bizerrs.BadRequest("blog", "invalid article id", "invalid params")
-	}
-	return &emptypb.Empty{}, b.articleUc.Delete(ctx, id)
+	return &emptypb.Empty{}, b.articleUc.Delete(ctx, req.GetId())
 }
 
 func (b *blogService) GetArticle(ctx context.Context, req *pb.GetArticleRequest) (*pb.Article, error) {
-	id, err := strconv.ParseInt(strings.Split(req.GetName(), "/")[1], 10, 64)
+	a, err := b.articleUc.Get(ctx, req.GetId())
 	if err != nil {
-		return nil, bizerrs.BadRequest("blog", "invalid article id", "invalid params")
+		return nil, err
 	}
-	a, err := b.articleUc.Get(ctx, id)
 	return &pb.Article{
 		Id:          a.ID,
 		Title:       a.Title,
@@ -66,5 +58,5 @@ func (b *blogService) GetArticle(ctx context.Context, req *pb.GetArticleRequest)
 }
 
 func (s *blogService) ListArticle(ctx context.Context, req *pb.ListArticleRequest) (*pb.ListArticleReply, error) {
-	return &pb.ListArticleReply{}, nil
+	return &pb.ListArticleReply{Results: []*pb.Article{}}, nil
 }

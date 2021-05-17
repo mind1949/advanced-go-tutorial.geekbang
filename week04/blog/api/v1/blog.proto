@@ -14,29 +14,29 @@ option java_package = "api.v1";
 service Blog {
     rpc CreateArticle (CreateArticleRequest) returns (Article) {
         option (google.api.http) = {
-            post: "v1/articles"
+            post: "/v1/articles"
             body: "*"
         };
     };
     rpc UpdateArticle (UpdateArticleRequest) returns (Article) {
         option (google.api.http) = {
-            patch: "v1/{name=articles/*}"
+            patch: "/v1/articles/{id}"
             body: "article"
         };
     };
     rpc DeleteArticle (DeleteArticleRequest) returns (google.protobuf.Empty) {
         option (google.api.http) = {
-            delete: "/v1/{name=articles/*/}"
+            delete: "/v1/articles/{id}}"
         };
     };
     rpc GetArticle (GetArticleRequest) returns (Article) {
         option (google.api.http) = {
-            get: "v1/{name=articles/*"
+            get: "/v1/articles/{id}"
         };
     };
     rpc ListArticle (ListArticleRequest) returns (ListArticleReply) {
         option (google.api.http) = {
-            get: "v1/articles"
+            get: "/v1/articles"
         };
     };
 }
@@ -60,11 +60,11 @@ message UpdateArticleRequest {
 }
 
 message DeleteArticleRequest {
-    string name = 1;
+    int64 id = 1;
 }
 
 message GetArticleRequest {
-    string name = 1;
+    int64 id = 1;
 }
 
 message ListArticleRequest {
